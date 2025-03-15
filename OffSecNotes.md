@@ -304,6 +304,75 @@ find / -user root -perm -4000 -exec ls -ldb {} \; # Find SUID files
 dir flag* /s /p # Search for flags
 search -f "flag*" # Alternative flag search
 ```
+# HTTP in Detail
+
+## URL Structure
+```
+http: scheme ://user:password user @tryhackme.com host/domain:80 port /view? path id=1 query string #task3 fragment
+```
+- Any port between **1 - 65535** can be used.
+- It's possible to make a request to a web server with just one line:
+  ```
+  GET / HTTP/1.1
+  ```
+
+## HTTP Request Example
+```
+GET / HTTP/1.1
+Host: tryhackme.com
+User-Agent: Mozilla/5.0 Firefox/87.0
+Referer: https://tryhackme.com/
+```
+
+## HTTP Status Codes
+### Response Categories:
+- **100-199 (Information Response):** Request received; client should continue.
+- **200-299 (Success):** Request was successful.
+- **300-399 (Redirection):** Request is redirected to another resource.
+- **400-499 (Client Errors):** Client made an invalid request.
+- **500-599 (Server Errors):** Server encountered an issue processing the request.
+
+### Common HTTP Status Codes
+- **200 OK:** Request completed successfully.
+- **201 Created:** A new resource was created.
+- **301 Moved Permanently:** Resource moved permanently.
+- **302 Found:** Temporary redirection.
+- **400 Bad Request:** Malformed or missing parameters.
+- **401 Unauthorized:** Authentication required.
+- **403 Forbidden:** Access denied, even if authenticated.
+- **404 Not Found:** Requested resource does not exist.
+- **405 Method Not Allowed:** Request method not permitted.
+- **500 Internal Server Error:** Unexpected server error.
+- **503 Service Unavailable:** Server down or overloaded.
+
+## HTTP Headers
+- No headers are strictly required to make an HTTP request, but they are necessary for proper website functionality.
+
+---
+
+# How Websites Work
+
+## Load Balancers
+A load balancer distributes incoming requests across multiple servers using algorithms like **round-robin** or **least connections** to optimize performance and reliability.
+
+## CDN (Content Delivery Network)
+A **CDN** hosts static files (JavaScript, CSS, images, videos) on globally distributed servers, reducing latency by serving content from the nearest location.
+
+## Databases
+Websites use databases to store and retrieve data efficiently. Common databases include:
+- **MySQL**
+- **PostgreSQL**
+- **MongoDB**
+- **MSSQL**
+
+Each database has unique features and use cases.
+
+## WAF (Web Application Firewall)
+A **WAF** protects web servers by:
+- Filtering malicious traffic
+- Blocking attacks
+- Applying rate limiting to prevent denial-of-service attempts
+
 
 ---
 
